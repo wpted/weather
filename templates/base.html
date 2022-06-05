@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>Weather App</title>
+</head>
+
+<body>
+<div>
+    {% block content %}{% endblock %}
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.weather() }}
+            {{ form.search() }}
+        </div>
+
+
+    </form>
+
+</div>
+</body>
+</html>
