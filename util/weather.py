@@ -1,5 +1,4 @@
 import os
-import datetime as dt
 import requests
 
 
@@ -9,7 +8,7 @@ class Weather:
         self.api_key = api_key
 
     def get_weather(self, city):
-        url = f"{self.url}?q={city}&appid={self.api_key}"
+        url = f"{self.url}?q={city}&appid={self.api_key}&units=metric"
         try:
             result = requests.get(url=url)
             result.raise_for_status()
