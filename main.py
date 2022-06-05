@@ -14,7 +14,7 @@ def home():
     form = WeatherForm()
     current_weather = Weather(MY_WEATHER_KEY)
 
-    user_location = vars(Location())
+    user_location = vars(Location())  # a location dictionary
 
     weather = current_weather.get_weather(user_location["city"])
     temperature = weather["main"]["temp"]
@@ -22,7 +22,7 @@ def home():
 
     if form.validate_on_submit():
         form = WeatherForm()
-        city = form.weather.data
+        city = form.weather.data.capitalize()  # the input city name
 
         return redirect(url_for('search', city=city))
 
@@ -33,18 +33,25 @@ def home():
 @app.route('/search/<city>', methods=["POST", "GET"])
 def search(city):
     form = WeatherForm()
-    search_weather = Weather(MY_WEATHER_KEY).get_weather(city)
-    temperature = search_weather["main"]["temp"]
-    weather_description = search_weather["weather"][0]["main"].lower()
 
-    if form.validate_on_submit():
-        form = WeatherForm()
-        city = form.weather.data
+    if Weather(MY_WEATHER_KEY).get_weather(city):  # Not None
+        search_weather = Weather(MY_WEATHER_KEY).get_weather(city)
+        temperature = search_weather["main"]["temp"]
+        weather_description = search_weather["weather"][0]["main"].lower()
 
-        return redirect(url_for('search', city=city))
+        if form.validate_on_submit():
+            form = WeatherForm()
+            city = form.weather.data.capitalize()
 
-    return render_template("result.html", form=form, temperature=temperature, weather_description=weather_description,
-                           location=city)
+            return redirect(url_for('search', city=city))
+
+        return render_template("result.html", form=form, temperature=temperature,
+                               weather_description=weather_description,
+                               location=city)
+    else:
+        # input invalid or city not found
+        # return to home and flash the message
+        return redirect(url_for("home"))
 
 
 if __name__ == '__main__':
